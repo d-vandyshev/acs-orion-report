@@ -1,0 +1,6 @@
+#
+# Config for web_access_acs_orion program. Toml format: github.com/toml-lang/toml
+#
+
+# Path to Orion database
+DBPath = "c:\Program Files\Orion\BASE"
