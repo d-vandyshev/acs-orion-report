@@ -21,10 +21,7 @@ type (
 )
 
 func main() {
-	// Logging
 	setLogging()
-
-	// Configuration
 	config := readConfig(CONFIG_FILE)
 
 	fmt.Println(config.DBPath)
