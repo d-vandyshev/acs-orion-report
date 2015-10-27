@@ -1,24 +1,24 @@
 package main
 
 import (
-	"log"
-	"os"
-	"io"
-	"fmt"
-	"time"
-	"sort"
 	"encoding/json"
-	"path/filepath"
+	"fmt"
 	"github.com/BurntSushi/toml"
-	"net/http"
 	auth "github.com/abbot/go-http-auth"
+	"io"
+	"log"
+	"net/http"
+	"os"
+	"path/filepath"
+	"sort"
+	"time"
 )
 
 type (
 	// Configuration
 	tomlConfig struct {
 		OrionDatabase OrionDatabaseInfo
-		WebServer webServerInfo
+		WebServer     webServerInfo
 	}
 	OrionDatabaseInfo struct {
 		Path string
@@ -49,9 +49,9 @@ func main() {
 
 type (
 	lastSeenEmployee struct {
-	TabNum int
-	Name string
-	Time time.Time
+		TabNum int
+		Name   string
+		Time   time.Time
 	}
 
 	lastSeenEmployeesList []lastSeenEmployee
@@ -59,18 +59,17 @@ type (
 
 func showLastSeenEmployees(w http.ResponseWriter, r *auth.AuthenticatedRequest) {
 	emps := new(employeesTable)
-	err := paradoxReadTable(config.OrionDatabase.Path + string(os.PathSeparator) + "pList.DB", emps, 0)
-	fmt.Println(emps)
+	err := paradoxReadTable(config.OrionDatabase.Path+string(os.PathSeparator)+"pList.DB", emps, 0)
 	if err != nil {
-		http.Error(w, "Error 101 accessing database Paradox: " + err.Error(), 500)
+		http.Error(w, "Error 101 accessing database Paradox: "+err.Error(), 500)
 		return
 	}
 	sort.Sort(emps)
 	// All events
 	events := new(eventsTable)
-	err = paradoxReadTable(config.OrionDatabase.Path + string(os.PathSeparator) + "pLogData.db", events, 0)
+	err = paradoxReadTable(config.OrionDatabase.Path+string(os.PathSeparator)+"pLogData.db", events, 0)
 	if err != nil {
-		http.Error(w, "Error 102 accessing database Paradox: " + err.Error(), 500)
+		http.Error(w, "Error 102 accessing database Paradox: "+err.Error(), 500)
 		return
 	}
 	sort.Sort(events)
@@ -78,7 +77,7 @@ func showLastSeenEmployees(w http.ResponseWriter, r *auth.AuthenticatedRequest) 
 	for _, emp := range *emps {
 		for _, ev := range *events {
 			if emp.ID == ev.HozOrgan {
-//				fmt.Println(emp.Name, emp.FirstName, emp.MidName, ";", ev.TimeVal)
+				//				fmt.Println(emp.Name, emp.FirstName, emp.MidName, ";", ev.TimeVal)
 				items = append(items, lastSeenEmployee{emp.TabNumber, emp.Name + emp.FirstName + emp.MidName, ev.TimeVal})
 				break
 			}
@@ -86,7 +85,7 @@ func showLastSeenEmployees(w http.ResponseWriter, r *auth.AuthenticatedRequest) 
 	}
 	jsonData, err := json.Marshal(items)
 	if err != nil {
-		http.Error(w, "Error 103 converting data in json: " + err.Error(), 500)
+		http.Error(w, "Error 103 converting data in json: "+err.Error(), 500)
 		return
 	}
 	fmt.Fprintf(w, string(jsonData))

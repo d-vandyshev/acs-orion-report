@@ -1,14 +1,14 @@
 package main
 
 import (
-	"os"
-	"time"
 	"bytes"
-	"strings"
-	"io/ioutil"
 	"encoding/binary"
 	"github.com/paulrosania/go-charset/charset"
 	_ "github.com/paulrosania/go-charset/data"
+	"io/ioutil"
+	"os"
+	"strings"
+	"time"
 )
 
 const (
